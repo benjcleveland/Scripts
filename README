@@ -1,0 +1,9 @@
+Scripts that I have put together over time.  They may not be very well commented or clean.
+
+
+boardgamegeek - used to create the initial database for my board game website.  Uses the boardgamegeek.com xml api.
+
+team_cowboy - played around with the team cowboy api a little bit.  Could be cleaned up and turned into a python library.
+
+soup - a script that uses beautiful soup to do some web scraping.
+
