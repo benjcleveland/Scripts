@@ -31,7 +31,7 @@ def create_url_string( url_dict ):
     return url_string[1:]
 
 def create_sig( url_dict, req_type ):
-    p_api_key = '3bddb98725ddd5776edd8e8dae277bc4bc05eabe'
+    p_api_key = cowboy_keys.PRIVATE_KEY
 
     url_string = create_url_string(url_dict).lower()
     sig_string = '|'.join([p_api_key, req_type, url_dict['method'], url_dict['timestamp'], url_dict['nonce'],url_string])
