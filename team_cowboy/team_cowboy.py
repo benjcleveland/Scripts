@@ -7,7 +7,6 @@ import hashlib
 import json
 import sys
 
-sys.path.append('/home/cleveb/keys')
 import cowboy_keys
 
 def build_url( method ):
@@ -157,6 +156,30 @@ def team_cowboy_get_team_members(usertoken,  teamid ):
 
     return name_list 
 
+def team_cowboy_get_team_schedule( usertoken, teamids):
+
+    for (name, team) in teamids:
+
+        url_dict = build_url('User_GetTeamEvents')
+        url_dict['userToken'] = usertoken
+        url_dict['teamId'] = team
+        url_dict['startDateTime'] = ''
+        url_dict['endDateTime'] = ''
+
+        create_sig( url_dict, 'GET' )
+
+        request = create_url_string( url_dict )
+
+
+        headers = {'user-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)'}
+        url = urllib2.Request('https://api.teamcowboy.com/v1/?' + request, headers=headers)
+        res = urllib2.urlopen(url)
+
+        data = json.loads( res.read())
+
+        print name
+        for value in data['body']:
+            print value['oneLineDisplay']  + value['location']['name']
 
 if __name__ == '__main__':
 
@@ -165,9 +188,12 @@ if __name__ == '__main__':
     team_cowboy_test( 'Ben is')
     team_cowboy_test_post( 'Ben is')
     # this call will fail without a user name and password
-    login = team_cowboy_login('', '')
+    username = raw_input('Enter username ->')
+    password = raw_input('Enter password ->')
+    login = team_cowboy_login(username, password)
     teamids = team_cowboy_get_teamid( login['body']['token'] )
-    names = team_cowboy_get_team_members(login['body']['token'], teamids )
-    for key in names:
-        print names[key]
+    #names = team_cowboy_get_team_members(login['body']['token'], teamids )
+    #for key in names:
+    #    print names[key]
 
+    team_cowboy_get_team_schedule( login['body']['token'], teamids ) 
