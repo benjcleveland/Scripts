@@ -8,3 +8,5 @@ team_cowboy - played around with the team cowboy api a little bit.  Could be cle
 soup - a script that uses beautiful soup to do some web scraping.
 
 closure-hw - simple hello world program using the google closure javascript library
+
+google_calendar - contains a script that updates your google calendar with your games/events from team cowboy.  Needs a little work.
