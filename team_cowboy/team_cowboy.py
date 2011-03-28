@@ -158,6 +158,8 @@ def team_cowboy_get_team_members(usertoken,  teamid ):
 
 def team_cowboy_get_team_schedule( usertoken, teamids):
 
+    ret = []
+
     for (name, team) in teamids:
 
         url_dict = build_url('User_GetTeamEvents')
@@ -179,7 +181,11 @@ def team_cowboy_get_team_schedule( usertoken, teamids):
 
         print name
         for value in data['body']:
-            print value['oneLineDisplay']  + value['location']['name']
+            print value['oneLineDisplay']  + value['location']['name'] + value['dateTimeInfo']['startDateTimeLocal']
+            
+            ret.append({ 'title': value['oneLineDisplay'], 'content': value['location']['name'], 'starttime':value['dateTimeInfo']['startDateTimeLocal'], 'endtime':value['dateTimeInfo']['endDateTimeLocal'] })
+    
+    return ret
 
 if __name__ == '__main__':
 
