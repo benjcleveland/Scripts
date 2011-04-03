@@ -4,7 +4,14 @@ import urllib2
 import urllib
 import time
 import hashlib 
-import json
+
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
+
+from google.appengine.api import urlfetch
+
 import sys
 
 import cowboy_keys
@@ -19,6 +26,17 @@ def build_url( method ):
     }
     
     return url_dict
+
+def url_request( url_args, data='', m='get' ):
+
+    method = { 'post':urlfetch.POST,
+            'get':urlfetch.GET,
+            }
+    headers = {'user-agent': ('Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)')}
+    print url_args
+    result = urlfetch.fetch(url=(url_args), payload=(data), headers=headers, method= method.get(m,urlfetch.GET))
+
+    return result.content
 
 def create_url_string( url_dict ):
     '''
@@ -43,7 +61,6 @@ def create_sig( url_dict, req_type ):
 
 
 def team_cowboy_test( test_string ):
-    print 'test'
     
     url_dict = build_url('Test_GetRequest')
 
@@ -54,15 +71,19 @@ def team_cowboy_test( test_string ):
 
    # url_dict = sorted(url_dict, key=url_dict.iterkeys())
     request = create_url_string(url_dict)
+    '''
     headers = {'user-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)'}
     url = urllib2.Request('http://api.teamcowboy.com/v1/?' + request, headers=headers)
     res = urllib2.urlopen(url)
-    data = res.read()
-    print data
+    '''
+    url = 'http://api.teamcowboy.com/v1/?' + request
+    res = url_request(url)
+    #data = res.read()
+    #print data
+    print res
 
 
 def team_cowboy_test_post( test_string ):
-    print 'test'
 
     url_dict = build_url('Test_PostRequest')
     url_dict['testParam'] = test_string
@@ -72,13 +93,18 @@ def team_cowboy_test_post( test_string ):
     request = create_url_string(url_dict)
 
     headers = {'user-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)'}
+    '''
     url = urllib2.Request('http://api.teamcowboy.com/v1/', data=request, headers=headers)
     res = urllib2.urlopen(url)
-    data = res.read()
-    print data
+    '''
+    #data = res.read()
+    #print data
+
+    url = 'http://api.teamcowboy.com/v1/?' 
+    res = url_request(url, data=request, m='post')
+    print res
 
 def team_cowboy_login( username, password ):
-    print 'test'
 
     url_dict = build_url('Auth_GetUserToken')
     url_dict['username'] = username
@@ -89,13 +115,16 @@ def team_cowboy_login( username, password ):
 
     request = create_url_string( url_dict )
 
+    '''
     headers = {'user-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)'}
     url = urllib2.Request('https://api.teamcowboy.com/v1/', data=request, headers=headers)
     res = urllib2.urlopen(url)
-
-    data = json.loads( res.read())
-
-    return data
+    '''
+    url = str('https://api.teamcowboy.com/v1/?')
+    res = url_request(url, data=request, m='post')
+    #data = json.loads( res.read())
+    data = json.loads( res)
+    return data 
 
 
 
@@ -109,22 +138,27 @@ def team_cowboy_get_teamid( usertoken ):
 
     request = create_url_string( url_dict )
 
+    ''' 
     headers = {'user-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)'}
     url = urllib2.Request('https://api.teamcowboy.com/v1/?' + request, headers=headers)
     res = urllib2.urlopen(url)
+    '''
+    url = 'http://api.teamcowboy.com/v1/?' + request
+    res = url_request(url)
 
-    data = json.loads( res.read())
+    #data = json.loads( res.read())
+    data = json.loads( res)
 
     ids = []
     for value in data['body']:
-        print 'team name', value['name']
-        print 'city', value['city']
+        #print 'team name', value['name']
+        #print 'city', value['city']
         ids.append((value['name'],value['teamId']))
     return ids 
 
 def team_cowboy_get_team_members(usertoken,  teamid ):
 
-    name_list = {} 
+    name_list = [] 
 
     for (name,team) in teamid:
 
@@ -141,18 +175,26 @@ def team_cowboy_get_team_members(usertoken,  teamid ):
 
         request = create_url_string( url_dict )
 
+        '''
         headers = {'user-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)'}
         url = urllib2.Request('https://api.teamcowboy.com/v1/?' + request, headers=headers)
         res = urllib2.urlopen(url)
+        '''
+         
+        url = 'http://api.teamcowboy.com/v1/?' + request
+        res = url_request(url)
 
-        data = json.loads( res.read())
+        #data = json.loads( res.read())
+        data = json.loads( res)
 
    
-        print 'Team ', name
-        for value in data['body']:
-            print value['firstName'], value['lastName'], value['emailAddress1'], value['phone1']
+        #print 'Team ', name
+        #for value in data['body']:
+            #print value['firstName'], value['lastName'], value['emailAddress1'], value['phone1']
 
-        name_list[name] = data
+        #name_list[name] = data
+        data['teamname'] = name
+        name_list.append(data)
 
     return name_list 
 
