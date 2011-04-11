@@ -16,7 +16,6 @@ except ImportError:
     except ImportError:
         from django.utils import simplejson as json
 
-
 class TeamCowboyApi:
 
     def __init__( self, use_gae=False ):
@@ -100,11 +99,6 @@ class TeamCowboyApi:
        # url_dict = sorted(url_dict, key=url_dict.iterkeys())
         request = self.create_url_string(url_dict)
 
-        '''
-        headers = {'user-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)'}
-        url = urllib2.Request('http://api.teamcowboy.com/v1/?' + request, headers=headers)
-        res = urllib2.urlopen(url)
-        '''
         url = 'http://api.teamcowboy.com/v1/?' + request
         res = self.url_request(url)
         #data = res.read()
@@ -122,10 +116,6 @@ class TeamCowboyApi:
         request = self.create_url_string(url_dict)
 
         headers = {'user-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)'}
-        '''
-        url = urllib2.Request('http://api.teamcowboy.com/v1/', data=request, headers=headers)
-        res = urllib2.urlopen(url)
-        '''
         #data = res.read()
         #print data
 
@@ -144,18 +134,11 @@ class TeamCowboyApi:
 
         request = self.create_url_string( url_dict )
 
-        '''
-        headers = {'user-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)'}
-        url = urllib2.Request('https://api.teamcowboy.com/v1/', data=request, headers=headers)
-        res = urllib2.urlopen(url)
-        '''
         url = str('https://api.teamcowboy.com/v1/?')
         res = self.url_request(url, data=request, m='post')
         #data = json.loads( res.read())
         data = json.loads( res)
         return data 
-
-
 
     def team_cowboy_get_teamid(self, usertoken ):
 
@@ -167,11 +150,6 @@ class TeamCowboyApi:
 
         request = self.create_url_string( url_dict )
 
-        ''' 
-        headers = {'user-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)'}
-        url = urllib2.Request('https://api.teamcowboy.com/v1/?' + request, headers=headers)
-        res = urllib2.urlopen(url)
-        '''
         url = 'http://api.teamcowboy.com/v1/?' + request
         res = self.url_request(url)
 
@@ -203,12 +181,6 @@ class TeamCowboyApi:
             self.create_sig( url_dict, 'GET')
 
             request = self.create_url_string( url_dict )
-
-            '''
-            headers = {'user-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)'}
-            url = urllib2.Request('https://api.teamcowboy.com/v1/?' + request, headers=headers)
-            res = urllib2.urlopen(url)
-            '''
 
             url = 'http://api.teamcowboy.com/v1/?' + request
             res = self.url_request(url)
