@@ -245,16 +245,18 @@ class TeamCowboyApi:
 
 
             headers = {'user-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)'}
-            url = urllib2.Request('https://api.teamcowboy.com/v1/?' + request, headers=headers)
+            url = urllib2.Request('http://api.teamcowboy.com/v1/?' + request, headers=headers)
             res = urllib2.urlopen(url)
 
             data = json.loads( res.read())
 
             print name
             for value in data['body']:
-                print value['oneLineDisplay']  + value['location']['name'] + value['dateTimeInfo']['startDateTimeLocal']
+                #print value['oneLineDisplay']  + value['location']['name'] + value['dateTimeInfo']['startDateTimeLocal']
 
-                ret.append({ 'title': value['oneLineDisplay'], 'content': value['location']['name'], 'starttime':value['dateTimeInfo']['startDateTimeLocal'], 'endtime':value['dateTimeInfo']['endDateTimeLocal'] })
+                if 'name' in value['location']:
+
+                    ret.append({ 'title': value['oneLineDisplay'], 'content': value['location']['name'], 'starttime':value['dateTimeInfo']['startDateTimeLocal'], 'endtime':value['dateTimeInfo']['endDateTimeLocal'] })
 
         return ret
 if __name__ == '__main__':
