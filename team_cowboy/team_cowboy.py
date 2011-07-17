@@ -256,7 +256,8 @@ class TeamCowboyApi:
 
                 if 'name' in value['location']:
 
-                    ret.append({ 'title': value['oneLineDisplay'], 'content': value['location']['name'], 'starttime':value['dateTimeInfo']['startDateTimeLocal'], 'endtime':value['dateTimeInfo']['endDateTimeLocal'] })
+                    # note the oppenent is stored under title for some reason...?
+                    ret.append({ 'team_name':name, 'opponent': value['title'], 'title': value['oneLineDisplay'], 'content': value['location']['name'], 'starttime':value['dateTimeInfo']['startDateTimeLocal'], 'endtime':value['dateTimeInfo']['endDateTimeLocal'] })
 
         return ret
 if __name__ == '__main__':
